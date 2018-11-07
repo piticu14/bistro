@@ -1,0 +1,25 @@
+parameters:
+
+database:
+	dsn: 'mysql:host=127.0.0.1;dbname=bistro'
+	user: #user
+	password: #password
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+
+session:
+	expiration: 14 days
+	debugger: true
+
+
+
+services:
+	router: App\RouterFactory::createRouter
+	- App\Factories\SizeFactory
+	- App\Factories\ProductFactory
+	- App\Models\User
+	authenticator: App\Factories\Authenticator

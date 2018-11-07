@@ -1,0 +1,21 @@
+{block content}
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            {form signInForm}
+                <div class="form-group">
+                    {label username}
+                    {input username class => 'form-control', placeholder => 'Uživatelské jméno'}
+                </div>
+                <div class="form-group">
+                    {label password}
+                    {input password class => 'form-control', placeholder => 'Heslo'}
+                </div>
+                {input send class => 'btn btn-primary text-center'}
+            {/form}
+        </div>
+        <div class="col-md-12 text-center">
+            <b>Nemáte účet? <a n:href="User:signup">Vytvořte </a> si ho.</b>
+        </div>
+    </div>
+
+{/block}

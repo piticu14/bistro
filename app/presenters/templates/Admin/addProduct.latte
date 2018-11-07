@@ -1,0 +1,18 @@
+
+{block content}
+    {control addProduct}
+    <script>
+        document.getElementById('frm-addProduct-size').parentNode.parentNode.style.display = 'none';
+        function showSize(){
+            var productTypeInput = document.getElementById('frm-addProduct-type');
+            var productTypeValue = productTypeInput.options[productTypeInput.selectedIndex].value;
+
+            if(productTypeValue === 'pizza') {
+                document.getElementById('frm-addProduct-size').parentNode.parentNode.removeAttribute('style');
+            } else {
+                document.getElementById('frm-addProduct-size').parentNode.parentNode.style.display = 'none';
+            }
+        }
+    </script>
+{/block}
+
