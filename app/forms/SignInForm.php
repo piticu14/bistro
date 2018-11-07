@@ -31,7 +31,6 @@ class SignInForm extends UI\Control
     public function signInFormSubmitted(UI\Form $form,\stdClass $values) {
        $this->user->login($values->username,$values->password);
 
-        bdump($this->user->isLoggedIn());
     }
 
 

@@ -6,6 +6,7 @@ use Nette;
 use App\Factories\ProductFactory;
 use Nette\Utils\ArrayHash;
 Use Nette\Http\Session;
+use App\Forms\SignInForm;
 
 final class HomepagePresenter extends Nette\Application\UI\Presenter
 {
@@ -22,7 +23,6 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
     }
 
     public function renderDefault() {
-
         //$this->session->getSection('cart')->remove();
         $cartProducts = $this->getCartProducts();
 
@@ -42,24 +42,36 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
         return [];
     }
 
-    public function actionAddToCart($id, $quantity) {
-        $product = $this->productFactory->get($id);
+    /**
+     * Add product to the cart using Ajax
+     * DON'T USE `$id` as parameter because it will take the route
+     * parameter instead of ajax request
+     * @param $priceId
+     * @param $quantity
+     */
+    public function handleAddToCart($priceId, $quantity) {
+        $product = $this->productFactory->get($priceId);
         $product['quantity'] = $quantity;
         $product['price'] *= $quantity;
 
         $session = $this->session->getSection('cart');
 
-        $session->$id = $product;
+        $session->$priceId = $product;
 
-        $this->redirect('Homepage:default');
+        $this->redrawControl('cart');
     }
 
-    public function actionDeleteCartProduct($id) {
+    public function handleDeleteCartProduct($id) {
         $session = $this->session->getSection('cart');
         unset($session->$id);
 
-        $this->redirect('Homepage:default');
+        $this->redrawControl('cart');
     }
+
+    protected function createComponentSignInForm() {
+        return (new SignInForm($this->user))->create();
+    }
+
 
 
 

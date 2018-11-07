@@ -1,5 +1,6 @@
 {block content}
-        {ifset $cartProducts}
+{snippet cart}
+    {ifset $cartProducts}
         {var $total = 0}
         <div id="orderContainer" class="row justify-content-md-center pb-2">
             <div class="col-sm-12">
@@ -7,72 +8,111 @@
             </div>
             <div class="col-sm-8">
                 <ul class="list-group">
-            {foreach $cartProducts as $cartProduct}
-                {php $total += $cartProduct->price}
+                    {foreach $cartProducts as $cartProduct}
+                        {php $total += $cartProduct->price}
                         <li class="list-group-item">
-                            <a n:href="Homepage:deleteCartProduct id => $cartProduct->price_id" class="close" aria-label="Close">
+                            <a n:href="deleteCartProduct! id => $cartProduct->price_id" class="ajax close" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </a>
                             <span>
                                 <b>{$cartProduct->name} ({$cartProduct->quantity})</b>,
-                                <i n:tag-ifset="$cartProduct->size"> {$cartProduct->size}</i>
+                                {ifset $cartProduct->size}<i> {$cartProduct->size}</i> {/ifset}
                             </span>
                             <b class="float-right">{$cartProduct->price} Kč</b>
                         </li>
-            {/foreach}
+                    {/foreach}
                     <li class="list-group-item text-center">Celkem za objednávku <h2>{$total} Kč</h2></li>
                     <li class="list-group-item"><a href="#" class="btn btn-success btn-lg btn-block">Objednat</a></li>
                 </ul>
             </div>
-            {/ifset}
         </div>
-
-    <div id="products" class="row justify-content-center" data-add-to-cart-link = "{plink Homepage:addToCart}">
-        {foreach $products as $product}
-            {var $price = $product->price}
-            <div class="col-sm-2" style="margin:2px; ">
-                <ul class="list-group">
-                    <li class="list-group-item"><img class="rounded mx-auto d-block" src="{$basePath}/images/{$product->image}" width="170px" height="170px"></li>
-                    <li class="list-group-item product-header"><h4>{$product->id}.  {$product->name}</h4></li>
-                    <li class="list-group-item"><em>{$product->ingredients}</em></li>
-                    {ifset $product->size}
-                        <li class="list-group-item">
-                            <select class="size form-control">
-                                {foreach $product->size as $key => $size}
-                                    <option data-price-id="{$product->price[$key]->id}" data-price-price="{$product->price[$key]->price}" value="{$size->value}">
-                                        {$size->name} ({$size->value} cm)
-                                    </option>
-                                {/foreach}
-                            </select>
-                            <li id="price" class="list-group-item"  data-price-id="{$product->price[0]->id}"><b>{$product->price[0]->price} Kč</b></li>
-                        </li>
-                    {else}
-                        <li id="price" class="list-group-item"  data-price-id="{$product->price[0]->id}"><b>{$product->price[0]->price} Kč</b></li>
-                    {/ifset}
-                    <li class="list-group-item">
-                        <div class="col-lg-12">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
+    {/ifset}
+{/snippet}
+<div id="pizza" class="row justify-content-center" data-add-to-cart-link = "{link addToCart!}">
+    <div class="col-sm-12 bg-success rounded">
+        <h1 class="product-title text-center">Pizza</h1>
+    </div>
+    {foreach $products->pizza as $pizza}
+        {var $price = $pizza->price}
+        <div class="col-sm-3" style="margin:2px; ">
+            <ul class="list-group">
+                <li class="list-group-item"><img class="rounded mx-auto d-block" src="{$basePath}/images/{$pizza->image}" width="170px" height="170px"></li>
+                <li class="list-group-item product-header"><h4>{$pizza->id}.  {$pizza->name}</h4></li>
+                <li class="list-group-item product-ingredients"><em>{$pizza->ingredients}</em></li>
+                <li class="list-group-item">
+                    <select class="size form-control">
+                        {foreach $pizza->size as $key => $size}
+                            <option data-price-id="{$pizza->price[$key]->id}" data-price-price="{$pizza->price[$key]->price}" value="{$size->value}">
+                                {$size->name} ({$size->value} cm)
+                            </option>
+                        {/foreach}
+                    </select>
+                </li>
+                <li id="price" class="list-group-item"  data-price-id="{$pizza->price[0]->id}"><b>{$pizza->price[0]->price} Kč</b></li>
+                <li class="list-group-item">
+                    <div class="col-lg-12">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                         <span class="input-group-btn">
                                             <button type="button" class="quantity-left-minus btn btn-danger btn-number"  data-type="minus" data-field="">
                                                 <i class="fas fa-minus"></i>
                                             </button>
                                         </span>
-                                </div>
-                                <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" >
-                                <div class="input-group-append">
+                            </div>
+                            <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" >
+                            <div class="input-group-append">
                                         <span class="input-group-btn">
                                             <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
                                                 <i class="fas fa-plus"></i>
                                             </button>
                                         </span>
-                                </div>
                             </div>
                         </div>
-                    </li>
-                    <li id="addToCart" class="list-group-item text-center"><a class="btn btn-primary" n:href="Homepage:addToCart id => $product->price[0]->id, quantity => 1">Koupit</a></li>
-                </ul>
-            </div>
-        {/foreach}
+                    </div>
+                </li>
+                <li class="list-group-item text-center"><a class="addToCart btn btn-primary" data-price-id = "{$pizza->price[0]->id}" href="javascript:void(0);">Koupit</a></li>
+            </ul>
+        </div>
+    {/foreach}
+</div>
+
+<hr>
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 bg-success rounded">
+        <h1 class="product-title text-center">Burgers</h1>
     </div>
-{/block}
+    {foreach $products->burger as $burger}
+        {var $price = $burger->price}
+        <div class="col-sm-3" style="margin:2px; ">
+            <ul class="list-group">
+                <li class="list-group-item"><img class="rounded mx-auto d-block" src="{$basePath}/images/{$burger->image}" width="170px" height="170px"></li>
+                <li class="list-group-item product-header"><h4>{$burger->id}.  {$burger->name}</h4></li>
+                <li class="list-group-item product-ingredients"><em>{$burger->ingredients}</em></li>
+                <li id="price" class="list-group-item"  data-price-id="{$burger->price[0]->id}"><b>{$burger->price[0]->price} Kč</b></li>
+                <li class="list-group-item">
+                    <div class="col-lg-12">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="quantity-left-minus btn btn-danger btn-number"  data-type="minus" data-field="">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </span>
+                            </div>
+                            <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" >
+                            <div class="input-group-append">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item text-center"><a class="addToCart btn btn-primary" data-price-id="{$burger->price[0]->id}" href="javascript:void(0);">Koupit</a></li>
+            </ul>
+        </div>
+    {/foreach}
+</div>

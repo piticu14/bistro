@@ -1,6 +1,9 @@
 
 $(document).ready(function() {
 
+    /**
+     * Change size using +/- buttons
+     */
     $('.size').val($('.size option:first').val());
 
     $('.size').change(function(){
@@ -10,11 +13,36 @@ $(document).ready(function() {
         var price = $(this).children('option:selected').data('price-price');
 
         addPrice(id, price, $(this));
-        addBuyButton(id, $(this));
+        //addBuyButton(id, $(this));
 
     });
 
+    $(document).on('click','.addToCart',function(e) {
+        e.preventDefault();
+        var quantity = $(this).closest('ul').find('#quantity').val();
+        var url = $('#pizza').data('add-to-cart-link');
+        console.log(quantity);
+        $.nette.ajax({
+            url: url,
+            type: "POST",
+            data: {
+                priceId: $(this).data('price-id'),
+                quantity: quantity
+            },
+            success: function (payload) {
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+            },
+            error: function (jqXHR, status, error) {
+                console.log(jqXHR);
+                console.log(status);
+                console.log(error);
+            }
+        })
+    });
 
+    /**
+     * When `+` buttons clicked increase by 1
+     */
     $('.quantity-right-plus').click(function(e){
 
         var quantity = 1;
@@ -41,11 +69,14 @@ $(document).ready(function() {
                id = size_element.children('option:selected').data('price-id');
             }
 
-            addBuyButton(id,quantity_element);
+            //addBuyButton(id,quantity_element);
         }
 
     });
 
+    /**
+     * When `-` clicked decrease by 1
+     */
     $('.quantity-left-minus').click(function(e){
         // Stop acting like a button
         e.preventDefault();
@@ -71,11 +102,27 @@ $(document).ready(function() {
             if(size_element.length) {
                 id = size_element.children('option:selected').data('price-id');
             }
-            addBuyButton(id,quantity_element);
+           // addBuyButton(id,quantity_element);
         }
+    });
+
+
+    /**
+     * Show/Hide logged user information
+     */
+    $('#userLogged').hide();
+    $('#loginButton').click(function(e) {
+        e.preventDefault();
+       $('#userLogged').toggle("slide", { direction: "right" }, 1000);
     });
 });
 
+/**
+ * Add price to product based on size (if size exist)
+ * @param id
+ * @param price
+ * @param ele
+ */
 function addPrice(id, price, ele) {
     var priceHtml = '<li id="price" class="list-group-item"  data-price-id="' + id + '"><b>' + price + ' Kč</b></li>';
     /* Second Option to remove price <li>
@@ -88,13 +135,22 @@ function addPrice(id, price, ele) {
     }
     ele.parent().after(priceHtml);
 }
+
+/**
+ * Add buy button to product based on size (if exosts) and quantity
+ * @param id
+ * @param ele
+ */
+
+/*
 function addBuyButton(id, ele) {
     console.log(id);
-    if(ele.closest('ul').find('#addToCart').length) {
-        ele.closest('ul').find('#addToCart').remove();
+    if(ele.closest('ul').find('.addToCart').length) {
+        ele.closest('ul').find('.addToCart').remove();
     }
-    var addToCartLink = $('#products').data('add-to-cart-link');
+    var addToCartLink = $('#pizza').data('add-to-cart-link');
     var quantity = ele.closest('ul').find('#quantity').val();
-    var buyHtml = '<li id="addToCart" class="list-group-item text-center"><a class="btn btn-primary" href="' + addToCartLink + '/' + id + '/'+ quantity + '">Koupit</a></li>';
+    var buyHtml = '<li class="addToCart" class="list-group-item text-center"><a class="btn btn-primary" href="' + addToCartLink + '/' + id + '/'+ quantity + '">Koupit</a></li>';
     ele.closest('ul').append(buyHtml);
 }
+*/

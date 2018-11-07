@@ -1,4 +1,8 @@
 
+.product-title {
+    color:white;
+    text-decoration: underline;
+}
 #orderHeaderText{
     color: white;
 }
@@ -8,9 +12,33 @@
 }
 
 .product-header{
-    height:80px;
+    width:100%;
+    height:140px;
+
+    text-align: center;
+    display:table;
+}
+
+.product-header h4 {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.product-ingredients {
+    display:table;
+    height:150px;
+    text-align: center;
+}
+
+.product-ingredients em{
+    display:table-cell;
+    vertical-align: middle;
 }
 
 .input-number{
     width:10px;
+}
+
+#login {
+    display:none;
 }
