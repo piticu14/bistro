@@ -61,7 +61,7 @@ class SignUpForm extends UI\Control
             $user->{$key} = $value;
         }
         $user->store();
-        $this->redirect('User:signup');
+        $this->redirect('Homepage:default');
     }
 
 }

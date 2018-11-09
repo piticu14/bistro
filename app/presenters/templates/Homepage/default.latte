@@ -16,7 +16,7 @@
                             </a>
                             <span>
                                 <b>{$cartProduct->name} ({$cartProduct->quantity})</b>,
-                                {ifset $cartProduct->size}<i> {$cartProduct->size}</i> {/ifset}
+                                {ifset $cartProduct->size}<i> {$cartProduct->size->name} ({$cartProduct->size->value} cm)</i> {/ifset}
                             </span>
                             <b class="float-right">{$cartProduct->price} Kč</b>
                         </li>

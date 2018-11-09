@@ -5,15 +5,15 @@ namespace App\Presenters;
 
 use Nette;
 use Nette\Application\UI\Form;
-use App\Factories\SizeFactory;
+use App\Models\Size;
 
 class AdminPresenter extends Nette\Application\UI\Presenter
 {
-    /** @var SizeFactory */
-    private $sizeFactory;
+    /** @var Size */
+    private $size;
 
-    public function __construct (SizeFactory $sizeFactory) {
-        $this->sizeFactory = $sizeFactory;
+    public function __construct (Size $size) {
+        $this->sizeFactory = $size;
     }
 
 
@@ -23,7 +23,7 @@ class AdminPresenter extends Nette\Application\UI\Presenter
             'burger' => 'Burger'
         ];
 
-        $sizes = $this->sizeFactory->getSizes();
+        $sizes = $this->size->all();
 
         $form = new Form;
         $form->addText('name','Titulek:')

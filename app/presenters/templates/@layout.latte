@@ -31,10 +31,12 @@
         <ul class="navbar-nav">
             <div id="userLogged" style="display:inline-flex">
                 <li class="nav-item">
-                    <span class="nav-link"> Vítejte, <a href="#">{$user->getIdentity()->username}</a></span>
+                    {if $user->isLoggedIn()}
+                    <span class="nav-link"> Vítejte, <a href="#"">{$user->getIdentity()->username}</a></span>
+                    {/if}
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" n:href="User:logout">Odhlásit</a>
+                    <a class="nav-link"  n:href="User:logout">Odhlásit</a>
                 </li>
             </div>
             
@@ -51,7 +53,7 @@
 	<div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
     {include content}
 </div>
-    {include modals.latte}
+    {include modals/userLoginModal.latte}
 	{block scripts}
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>

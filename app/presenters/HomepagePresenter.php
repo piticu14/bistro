@@ -3,23 +3,43 @@
 namespace App\Presenters;
 
 use Nette;
-use App\Factories\ProductFactory;
+use App\Models\Product;
+use App\Models\Price;
+use App\Models\Size;
 use Nette\Utils\ArrayHash;
 Use Nette\Http\Session;
-use App\Forms\SignInForm;
 
-final class HomepagePresenter extends Nette\Application\UI\Presenter
+
+final class HomepagePresenter extends BasePresenter
 {
-    /** @var ProductFactory */
-    private $productFactory;
+    /** @var Product */
+    private $product;
+
+    /**
+     * @var Price
+     */
+    private $price;
+
+    /**
+     * @var Size
+     */
+    private $size;
 
     /** @var Session */
     private $session;
 
 
-    public function __construct(ProductFactory $productFactory, Session $session){
-        $this->productFactory = $productFactory;
+    public function __construct(
+        Product $product,
+        Price $price,
+        Session $session,
+        Size $size)
+    {
+        $this->product = $product;
         $this->session = $session;
+        $this->price = $price;
+        $this->size = $size;
+
     }
 
     public function renderDefault() {
@@ -31,7 +51,7 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
             $this->template->cartProducts = ArrayHash::from($cartProducts);
         }
 
-        $this->template->products = ArrayHash::from($this->productFactory->getAll());
+        $this->template->products = ArrayHash::from($this->product->all());
 
     }
 
@@ -50,13 +70,22 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
      * @param $quantity
      */
     public function handleAddToCart($priceId, $quantity) {
-        $product = $this->productFactory->get($priceId);
-        $product['quantity'] = $quantity;
-        $product['price'] *= $quantity;
+        $price = $this->price->find($priceId);
+        $size = $this->size->find($price->size_id);
+        $product = $this->product->find($price->product_id);
+
+
+        $product_array = [];
+        $product_array['price_id'] = $priceId;
+        $product_array['name'] = $product->name;
+        $product_array['price'] = $price->price * $quantity;
+        $product_array['quantity'] = $quantity;
+        $product_array['size']['name'] = $size->name;
+        $product_array['size']['value'] = $size->value;
 
         $session = $this->session->getSection('cart');
 
-        $session->$priceId = $product;
+        $session->$priceId = $product_array;
 
         $this->redrawControl('cart');
     }
@@ -67,12 +96,5 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
 
         $this->redrawControl('cart');
     }
-
-    protected function createComponentSignInForm() {
-        return (new SignInForm($this->user))->create();
-    }
-
-
-
 
 }

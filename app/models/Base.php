@@ -51,8 +51,9 @@ abstract class Base
                 ->fetch();
 
             if($row) {
-
-                $model = new static($this->database);
+                // Clone? Good idea? New static not working because of __constructor
+                // viz Product Model (need Price and Size model)
+                $model = clone($this);
                 foreach ($row as $key => $value) {
                     $model->{$key} = $value;
                 }
@@ -67,7 +68,7 @@ abstract class Base
      * Convert fillable data from cass to array
      * @return array
      */
-    private function toArray() {
+    protected function toArray() {
         $data = [];
         foreach ($this->fillable as $key) {
             $data[$key] = $this->{$key};
@@ -79,7 +80,7 @@ abstract class Base
      * Check if Model has table set
      * @return bool
      */
-    private function hasTable() {
+    protected function hasTable() {
         return $this->table ? true :false;
     }
 
@@ -88,7 +89,7 @@ abstract class Base
      * @return bool
      */
 
-    private function hasPrimaryKey() {
+    protected function hasPrimaryKey() {
         return $this->primaryKey ? true : false;
     }
 
